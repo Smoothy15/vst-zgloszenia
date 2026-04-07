@@ -15,8 +15,11 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "VST Wedding — Zgłoszenia",
-  description: "System zgłoszeń poprawek dla VST Wedding Studio",
+  title: "VST Wedding — Panel",
+  description: "Panel zgłoszeń poprawek — VST Wedding Studio",
+  icons: {
+    icon: "/favicon.jpg",
+  },
 };
 
 export default function RootLayout({

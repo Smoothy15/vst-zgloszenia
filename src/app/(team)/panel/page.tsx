@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { TeamTicketList } from "@/components/team-ticket-list";
 import { UserButton } from "@clerk/nextjs";
@@ -21,10 +22,14 @@ export default async function PanelPage() {
       <div className="mx-auto max-w-3xl">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="font-serif text-3xl font-semibold text-[var(--gold)]">
-              VST Wedding
-            </h1>
-            <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+            <Image
+              src="/logo.png"
+              alt="VST Wedding"
+              width={160}
+              height={29}
+              className="mb-1 invert"
+            />
+            <p className="text-sm text-[var(--muted-foreground)]">
               Panel zgłoszeń
             </p>
           </div>

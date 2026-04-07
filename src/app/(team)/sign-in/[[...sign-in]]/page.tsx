@@ -1,12 +1,17 @@
+import Image from "next/image";
 import { SignIn } from "@clerk/nextjs";
 
 export default function SignInPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--background)]">
       <div className="text-center">
-        <h1 className="mb-8 font-serif text-3xl font-semibold text-[var(--gold)]">
-          VST Wedding
-        </h1>
+        <Image
+          src="/logo.png"
+          alt="VST Wedding"
+          width={180}
+          height={33}
+          className="mx-auto mb-8 invert"
+        />
         <SignIn
           appearance={{
             elements: {

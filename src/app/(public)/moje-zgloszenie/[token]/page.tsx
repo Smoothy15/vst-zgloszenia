@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { ClientChat } from "@/components/client-chat";
 
@@ -35,9 +36,13 @@ export default async function MojeZgloszeniePage({
   return (
     <main className="min-h-screen bg-[var(--background)] px-4 py-12">
       <div className="mb-8 text-center">
-        <h1 className="font-serif text-3xl font-semibold tracking-wide text-[var(--gold)]">
-          VST Wedding
-        </h1>
+        <Image
+          src="/logo.png"
+          alt="VST Wedding"
+          width={160}
+          height={29}
+          className="mx-auto mb-2 invert"
+        />
         <p className="mt-1 text-sm text-[var(--muted-foreground)]">
           Twoje zgłoszenie
         </p>
