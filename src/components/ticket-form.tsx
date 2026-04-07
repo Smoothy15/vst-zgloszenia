@@ -6,6 +6,7 @@ import { AudioRecorder } from "./audio-recorder";
 export function TicketForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const audioRef = useRef<Blob | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -51,11 +52,12 @@ export function TicketForm() {
         body: submitData,
       });
 
+      const data = await res.json();
       if (!res.ok) {
-        const data = await res.json();
         throw new Error(data.error || "Coś poszło nie tak.");
       }
 
+      setAccessToken(data.accessToken || null);
       setIsSuccess(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Wystąpił błąd.");
@@ -65,6 +67,10 @@ export function TicketForm() {
   }
 
   if (isSuccess) {
+    const trackingUrl = accessToken
+      ? `${window.location.origin}/moje-zgloszenie/${accessToken}`
+      : null;
+
     return (
       <div className="mx-auto max-w-lg text-center">
         <div
@@ -75,10 +81,26 @@ export function TicketForm() {
           <h2 className="mb-2 font-serif text-2xl text-[var(--foreground)]">
             Zgłoszenie przyjęte
           </h2>
-          <p className="text-sm text-[var(--muted-foreground)]">
-            Dziękujemy! Na podany adres email wysłaliśmy link do śledzenia
-            statusu zgłoszenia. Odezwiemy się wkrótce.
+          <p className="mb-4 text-base text-[var(--muted-foreground)]">
+            Dziękujemy! Odezwiemy się wkrótce.
           </p>
+          {trackingUrl && (
+            <div className="mt-6">
+              <p className="mb-3 text-sm text-[var(--muted-foreground)]">
+                Zapisz poniższy link — pozwoli Ci sprawdzić status zgłoszenia:
+              </p>
+              <a
+                href={trackingUrl}
+                className="inline-block bg-[var(--gold)] px-6 py-3 text-sm font-semibold text-[var(--background)] transition-colors hover:bg-[var(--gold-light)]"
+                style={{ borderRadius: "2px" }}
+              >
+                Sprawdź status zgłoszenia
+              </a>
+              <p className="mt-4 break-all text-xs text-[var(--muted-foreground)]">
+                {trackingUrl}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     );

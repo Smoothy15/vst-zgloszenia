@@ -134,7 +134,7 @@ export async function POST(req: NextRequest) {
       console.error("Błąd wysyłki powiadomienia do team");
     }
 
-    return NextResponse.json({ success: true, ticketId: ticket.id });
+    return NextResponse.json({ success: true, ticketId: ticket.id, accessToken: ticket.access_token });
   } catch {
     return NextResponse.json(
       { error: "Wystąpił nieoczekiwany błąd." },
