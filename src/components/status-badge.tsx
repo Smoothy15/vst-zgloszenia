@@ -22,6 +22,11 @@ const statusConfig: Record<
     borderColor: "border-l-[#888888]",
     textColor: "text-[#888888]",
   },
+  archived: {
+    label: "Archiwum",
+    borderColor: "border-l-[#555555]",
+    textColor: "text-[#555555]",
+  },
 };
 
 export function StatusBadge({ status }: { status: string }) {

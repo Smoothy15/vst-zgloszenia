@@ -6,8 +6,7 @@ function getResend() {
   return _resend;
 }
 
-// TODO: Zmienić na zgloszenia@vstwedding.pl po weryfikacji domeny w Resend
-const FROM_EMAIL = "VST Wedding <onboarding@resend.dev>";
+const FROM_EMAIL = "VST Wedding <zgloszenia@vstwedding.pl>";
 
 function getTeamEmails(): string[] {
   const emails: string[] = [];

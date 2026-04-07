@@ -5,7 +5,7 @@ export async function PATCH(req: NextRequest) {
   try {
     const { ticketId, status } = await req.json();
 
-    const validStatuses = ["new", "in_progress", "done", "sent"];
+    const validStatuses = ["new", "in_progress", "done", "sent", "archived"];
     if (!ticketId || !validStatuses.includes(status)) {
       return NextResponse.json({ error: "Nieprawidłowe dane." }, { status: 400 });
     }
