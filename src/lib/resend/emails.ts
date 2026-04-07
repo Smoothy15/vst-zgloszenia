@@ -6,7 +6,7 @@ function getResend() {
   return _resend;
 }
 
-const FROM_EMAIL = "VST Wedding <zgloszenia@vstwedding.pl>";
+const FROM_EMAIL = "VST Wedding <panel@vstwedding.pl>";
 
 function getTeamEmails(): string[] {
   const emails: string[] = [];
