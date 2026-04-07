@@ -14,19 +14,30 @@ interface Ticket {
   updated_at: string;
 }
 
-const statusOrder: Record<string, number> = {
-  new: 0,
-  in_progress: 1,
-  done: 2,
-  sent: 3,
+const statusLabels: Record<string, string> = {
+  all: "Wszystkie",
+  new: "Nowe",
+  in_progress: "W trakcie",
+  done: "Zrobione",
+  sent: "Wysłane",
 };
+
+function formatDateTime(date: string): string {
+  return new Date(date).toLocaleString("pl-PL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 function TicketCard({ ticket }: { ticket: Ticket }) {
   const [status, setStatus] = useState(ticket.status);
   const [isUpdating, setIsUpdating] = useState(false);
 
   async function handleStatusChange(e: React.MouseEvent, newStatus: string) {
-    e.preventDefault(); // Nie otwieraj linku
+    e.preventDefault();
     e.stopPropagation();
     setIsUpdating(true);
     try {
@@ -46,48 +57,40 @@ function TicketCard({ ticket }: { ticket: Ticket }) {
   return (
     <Link
       href={`/panel/${ticket.id}`}
-      className="block border border-[var(--border)] bg-[var(--card)] p-5 transition-colors hover:border-[var(--gold)]/50"
+      className="block border border-[var(--border)] bg-[var(--card)] p-6 transition-colors hover:border-[var(--gold)]/50"
       style={{ borderRadius: "4px" }}
     >
       {/* Górna część — imiona + status */}
       <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0 flex-1">
-          <h3 className="font-serif text-xl text-[var(--foreground)]">
-            {ticket.client_name}
-          </h3>
-        </div>
+        <h3 className="font-serif text-2xl text-[var(--foreground)]">
+          {ticket.client_name}
+        </h3>
         <StatusBadge status={status} />
       </div>
 
       {/* Daty */}
-      <div className="mt-3 flex items-center gap-6 text-sm text-[var(--muted-foreground)]">
+      <div className="mt-3 flex flex-col gap-1 text-base text-[var(--muted-foreground)] sm:flex-row sm:gap-6">
         <span>Ślub: {formatDate(ticket.wedding_date)}</span>
-        <span>Zgłoszono: {formatDate(ticket.created_at)}</span>
+        <span>Zgłoszono: {formatDateTime(ticket.created_at)}</span>
       </div>
 
       {/* Zmiana statusu — przyciski */}
       <div className="mt-4 flex flex-wrap gap-2">
         {["new", "in_progress", "done", "sent"].map((s) => {
-          const labels: Record<string, string> = {
-            new: "Nowe",
-            in_progress: "W trakcie",
-            done: "Zrobione",
-            sent: "Wysłane",
-          };
           const isActive = status === s;
           return (
             <button
               key={s}
               onClick={(e) => handleStatusChange(e, s)}
               disabled={isUpdating || isActive}
-              className={`px-3 py-1 text-xs font-medium transition-colors ${
+              className={`px-4 py-1.5 text-sm font-medium transition-colors ${
                 isActive
                   ? "bg-[var(--gold)] text-[var(--background)]"
                   : "border border-[var(--border)] text-[var(--muted-foreground)] hover:border-[var(--gold)] hover:text-[var(--gold)]"
               } disabled:opacity-50`}
               style={{ borderRadius: "2px" }}
             >
-              {labels[s]}
+              {statusLabels[s]}
             </button>
           );
         })}
@@ -97,26 +100,58 @@ function TicketCard({ ticket }: { ticket: Ticket }) {
 }
 
 export function TeamTicketList({ tickets }: { tickets: Ticket[] }) {
-  const sorted = [...tickets].sort((a, b) => {
-    const orderDiff =
-      (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9);
-    if (orderDiff !== 0) return orderDiff;
-    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-  });
+  const [filter, setFilter] = useState("all");
 
-  if (sorted.length === 0) {
-    return (
-      <div className="py-12 text-center text-[var(--muted-foreground)]">
-        Brak zgłoszeń
-      </div>
-    );
+  // Najnowsze na górze
+  const sorted = [...tickets].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
+
+  const filtered =
+    filter === "all" ? sorted : sorted.filter((t) => t.status === filter);
+
+  // Liczniki do filtrów
+  const counts: Record<string, number> = { all: tickets.length };
+  for (const t of tickets) {
+    counts[t.status] = (counts[t.status] || 0) + 1;
   }
 
   return (
-    <div className="space-y-3">
-      {sorted.map((ticket) => (
-        <TicketCard key={ticket.id} ticket={ticket} />
-      ))}
+    <div>
+      {/* Filtry */}
+      <div className="mb-6 flex flex-wrap gap-2">
+        {["all", "new", "in_progress", "done", "sent"].map((s) => {
+          const isActive = filter === s;
+          const count = counts[s] || 0;
+          return (
+            <button
+              key={s}
+              onClick={() => setFilter(s)}
+              className={`px-4 py-2 text-sm font-medium transition-colors ${
+                isActive
+                  ? "bg-[var(--gold)] text-[var(--background)]"
+                  : "border border-[var(--border)] text-[var(--muted-foreground)] hover:border-[var(--gold)] hover:text-[var(--gold)]"
+              }`}
+              style={{ borderRadius: "2px" }}
+            >
+              {statusLabels[s]} ({count})
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Lista */}
+      {filtered.length === 0 ? (
+        <div className="py-12 text-center text-lg text-[var(--muted-foreground)]">
+          Brak zgłoszeń
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filtered.map((ticket) => (
+            <TicketCard key={ticket.id} ticket={ticket} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
