@@ -25,8 +25,8 @@ export default async function PanelPage() {
             <Image
               src="/logo.png"
               alt="VST Wedding"
-              width={160}
-              height={29}
+              width={50}
+              height={66}
               className="mb-1 invert"
             />
             <p className="text-sm text-[var(--muted-foreground)]">

@@ -8,8 +8,8 @@ export default function SignInPage() {
         <Image
           src="/logo.png"
           alt="VST Wedding"
-          width={180}
-          height={33}
+          width={80}
+          height={105}
           className="mx-auto mb-8 invert"
         />
         <SignIn

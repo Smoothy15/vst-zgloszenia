@@ -14,8 +14,8 @@ export default function ZgloszeniePage() {
           <Image
             src="/logo.png"
             alt="VST Wedding"
-            width={180}
-            height={33}
+            width={80}
+            height={105}
             className="mx-auto mb-4 invert"
           />
           <p className="text-sm text-[var(--muted-foreground)]">

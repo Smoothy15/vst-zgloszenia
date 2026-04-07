@@ -39,8 +39,8 @@ export default async function MojeZgloszeniePage({
         <Image
           src="/logo.png"
           alt="VST Wedding"
-          width={160}
-          height={29}
+          width={70}
+          height={92}
           className="mx-auto mb-2 invert"
         />
         <p className="mt-1 text-sm text-[var(--muted-foreground)]">
