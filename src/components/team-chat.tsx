@@ -24,6 +24,7 @@ interface Ticket {
   client_name: string;
   wedding_date: string;
   email: string;
+  access_token: string;
   status: string;
   created_at: string;
 }
@@ -40,6 +41,15 @@ export function TeamChat({
   const [isSending, setIsSending] = useState(false);
   const [status, setStatus] = useState(ticket.status);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+
+  const clientLink = `${window.location.origin}/moje-zgloszenie/${ticket.access_token}`;
+
+  function copyClientLink() {
+    navigator.clipboard.writeText(clientLink);
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 2000);
+  }
 
   async function handleSend() {
     if (!newMessage.trim()) return;
@@ -101,6 +111,13 @@ export function TeamChat({
                 Email: {ticket.email}
               </p>
             )}
+            <button
+              onClick={copyClientLink}
+              className="mt-3 border border-[var(--border)] px-4 py-1.5 text-sm font-medium text-[var(--gold)] transition-colors hover:border-[var(--gold)]"
+              style={{ borderRadius: "2px" }}
+            >
+              {linkCopied ? "Skopiowano!" : "Kopiuj link dla klienta"}
+            </button>
           </div>
           <div className="flex items-center gap-3">
             <StatusBadge status={status} />
