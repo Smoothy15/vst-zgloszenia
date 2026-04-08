@@ -121,11 +121,14 @@ function TicketCard({
 function ArchivedCard({
   ticket,
   onRestore,
+  onDelete,
 }: {
   ticket: Ticket;
   onRestore: (id: string) => void;
+  onDelete: (id: string) => void;
 }) {
   const [isUpdating, setIsUpdating] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   async function handleRestore(e: React.MouseEvent) {
     e.preventDefault();
@@ -145,6 +148,29 @@ function ArchivedCard({
     }
   }
 
+  async function handleDelete(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      return;
+    }
+    setIsUpdating(true);
+    try {
+      const res = await fetch("/api/tickets/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ticketId: ticket.id }),
+      });
+      if (res.ok) onDelete(ticket.id);
+    } catch {
+      // ignore
+    } finally {
+      setIsUpdating(false);
+      setConfirmDelete(false);
+    }
+  }
+
   return (
     <Link
       href={`/panel/${ticket.id}`}
@@ -161,14 +187,24 @@ function ArchivedCard({
             <span>Zgłoszono: {formatDateTime(ticket.created_at)}</span>
           </div>
         </div>
-        <button
-          onClick={handleRestore}
-          disabled={isUpdating}
-          className="shrink-0 border border-[var(--border)] px-4 py-1.5 text-sm font-medium text-[var(--gold)] transition-colors hover:border-[var(--gold)] disabled:opacity-50"
-          style={{ borderRadius: "2px" }}
-        >
-          Przywróć
-        </button>
+        <div className="flex shrink-0 gap-2">
+          <button
+            onClick={handleRestore}
+            disabled={isUpdating}
+            className="border border-[var(--border)] px-4 py-1.5 text-sm font-medium text-[var(--gold)] transition-colors hover:border-[var(--gold)] disabled:opacity-50"
+            style={{ borderRadius: "2px" }}
+          >
+            Przywróć
+          </button>
+          <button
+            onClick={handleDelete}
+            disabled={isUpdating}
+            className="px-4 py-1.5 text-sm font-medium text-[var(--muted-foreground)] transition-colors hover:text-[var(--destructive)] disabled:opacity-50"
+            style={{ borderRadius: "2px" }}
+          >
+            {confirmDelete ? "Na pewno?" : "Usuń"}
+          </button>
+        </div>
       </div>
     </Link>
   );
@@ -207,6 +243,36 @@ export function TeamTicketList({ tickets }: { tickets: Ticket[] }) {
     setLocalTickets((prev) =>
       prev.map((t) => (t.id === id ? { ...t, status: "new" } : t))
     );
+  }
+
+  function handleDelete(id: string) {
+    setLocalTickets((prev) => prev.filter((t) => t.id !== id));
+  }
+
+  const [isClearingArchive, setIsClearingArchive] = useState(false);
+  const [confirmClear, setConfirmClear] = useState(false);
+
+  async function handleClearArchive() {
+    if (!confirmClear) {
+      setConfirmClear(true);
+      return;
+    }
+    setIsClearingArchive(true);
+    try {
+      const res = await fetch("/api/tickets/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ deleteAll: true }),
+      });
+      if (res.ok) {
+        setLocalTickets((prev) => prev.filter((t) => t.status !== "archived"));
+      }
+    } catch {
+      // ignore
+    } finally {
+      setIsClearingArchive(false);
+      setConfirmClear(false);
+    }
   }
 
   return (
@@ -282,21 +348,33 @@ export function TeamTicketList({ tickets }: { tickets: Ticket[] }) {
               Archiwum jest puste
             </div>
           ) : (
-            <div className="space-y-3">
-              {archived
-                .sort(
-                  (a, b) =>
-                    new Date(b.created_at).getTime() -
-                    new Date(a.created_at).getTime()
-                )
-                .map((ticket) => (
-                  <ArchivedCard
-                    key={ticket.id}
-                    ticket={ticket}
-                    onRestore={handleRestore}
-                  />
-                ))}
-            </div>
+            <>
+              <div className="mb-4 flex justify-end">
+                <button
+                  onClick={handleClearArchive}
+                  disabled={isClearingArchive}
+                  className="px-4 py-2 text-sm font-medium text-[var(--muted-foreground)] transition-colors hover:text-[var(--destructive)] disabled:opacity-50"
+                >
+                  {confirmClear ? "Na pewno usunąć wszystko?" : "Wyczyść archiwum"}
+                </button>
+              </div>
+              <div className="space-y-3">
+                {archived
+                  .sort(
+                    (a, b) =>
+                      new Date(b.created_at).getTime() -
+                      new Date(a.created_at).getTime()
+                  )
+                  .map((ticket) => (
+                    <ArchivedCard
+                      key={ticket.id}
+                      ticket={ticket}
+                      onRestore={handleRestore}
+                      onDelete={handleDelete}
+                    />
+                  ))}
+              </div>
+            </>
           )}
         </>
       )}
