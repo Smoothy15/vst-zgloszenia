@@ -37,11 +37,11 @@ export default async function MojeZgloszeniePage({
     <main className="min-h-screen bg-[var(--background)] px-4 py-12">
       <div className="mb-8 text-center">
         <Image
-          src="/logo.png"
+          src="/logo-horizontal.png"
           alt="VST Wedding"
-          width={70}
-          height={92}
-          className="mx-auto mb-2 invert"
+          width={180}
+          height={33}
+          className="mx-auto mb-2"
         />
         <p className="mt-1 text-sm text-[var(--muted-foreground)]">
           Twoje zgłoszenie

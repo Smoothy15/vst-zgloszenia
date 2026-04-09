@@ -6,11 +6,11 @@ export default function SignInPage() {
     <div className="flex min-h-screen items-center justify-center bg-[var(--background)]">
       <div className="text-center">
         <Image
-          src="/logo.png"
+          src="/logo-horizontal.png"
           alt="VST Wedding"
-          width={80}
-          height={105}
-          className="mx-auto mb-8 invert"
+          width={200}
+          height={36}
+          className="mx-auto mb-8"
         />
         <SignIn
           appearance={{

@@ -12,11 +12,11 @@ export default function ZgloszeniePage() {
       <div className="mx-auto max-w-lg">
         <div className="mb-10 text-center">
           <Image
-            src="/logo.png"
+            src="/logo-horizontal.png"
             alt="VST Wedding"
-            width={80}
-            height={105}
-            className="mx-auto mb-4 invert"
+            width={200}
+            height={36}
+            className="mx-auto mb-4"
           />
           <p className="text-sm text-[var(--muted-foreground)]">
             Formularz zgłoszenia poprawki do filmu
