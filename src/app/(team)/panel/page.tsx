@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { TeamTicketList } from "@/components/team-ticket-list";
 import { UserButton } from "@clerk/nextjs";
@@ -33,8 +34,16 @@ export default async function PanelPage() {
               Panel zgłoszeń
             </span>
           </div>
-          <div className="clerk-gold">
-            <UserButton />
+          <div className="flex items-center gap-4">
+            <Link
+              href="/panel/ustawienia"
+              className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--gold)]"
+            >
+              Ustawienia
+            </Link>
+            <div className="clerk-gold">
+              <UserButton />
+            </div>
           </div>
         </div>
 

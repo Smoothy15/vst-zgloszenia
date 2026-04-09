@@ -8,12 +8,23 @@ function getResend() {
 
 const FROM_EMAIL = "VST Wedding <panel@vstwedding.pl>";
 
-function getTeamEmails(): string[] {
+async function getTeamEmails(): Promise<string[]> {
+  try {
+    const { getServiceSupabase } = await import("@/lib/supabase/server");
+    const supabase = getServiceSupabase();
+    const { data } = await supabase
+      .from("notification_emails")
+      .select("email");
+    if (data && data.length > 0) {
+      return data.map((r: { email: string }) => r.email);
+    }
+  } catch {
+    // fallback to env vars
+  }
   const emails: string[] = [];
   if (process.env.TEAM_EMAIL_MAREK) emails.push(process.env.TEAM_EMAIL_MAREK);
   if (process.env.TEAM_EMAIL_MONTAZYSTA)
     emails.push(process.env.TEAM_EMAIL_MONTAZYSTA);
-  // Usuń duplikaty
   return [...new Set(emails)];
 }
 
@@ -79,7 +90,7 @@ export async function sendNewTicketNotification(ticket: {
   hasFiles: boolean;
   hasAudio: boolean;
 }) {
-  const teamEmails = getTeamEmails();
+  const teamEmails = await getTeamEmails();
   if (teamEmails.length === 0) return;
 
   const panelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/panel/${ticket.id}`;
@@ -118,7 +129,7 @@ export async function sendClientMessageNotification(ticket: {
   clientName: string;
   messageContent: string;
 }) {
-  const teamEmails = getTeamEmails();
+  const teamEmails = await getTeamEmails();
   if (teamEmails.length === 0) return;
 
   const panelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/panel/${ticket.id}`;
