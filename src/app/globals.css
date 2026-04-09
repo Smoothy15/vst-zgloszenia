@@ -64,6 +64,21 @@
   --success: #2d6a4f;
 }
 
+/* Clerk UserButton — gold theme */
+.clerk-gold .cl-userButtonTrigger {
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.15);
+}
+.clerk-gold .cl-userButtonTrigger:hover,
+.clerk-gold .cl-userButtonTrigger:focus {
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.3);
+}
+.clerk-gold .cl-avatarBox {
+  width: 36px;
+  height: 36px;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

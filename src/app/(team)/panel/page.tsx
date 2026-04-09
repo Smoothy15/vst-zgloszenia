@@ -18,22 +18,24 @@ export default async function PanelPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <main className="min-h-screen bg-[var(--background)] px-4 py-8">
-      <div className="mx-auto max-w-3xl">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
+    <main className="min-h-screen bg-[var(--background)] px-6 py-10 sm:px-8">
+      <div className="mx-auto max-w-4xl">
+        <div className="mb-10 flex items-center justify-between">
+          <div className="flex items-center gap-4">
             <Image
-              src="/logo.png"
+              src="/logo-horizontal.png"
               alt="VST Wedding"
-              width={50}
-              height={66}
-              className="mb-1 invert"
+              width={160}
+              height={29}
+              priority
             />
-            <p className="text-sm text-[var(--muted-foreground)]">
+            <span className="text-sm text-[var(--muted-foreground)]">
               Panel zgłoszeń
-            </p>
+            </span>
           </div>
-          <UserButton />
+          <div className="clerk-gold">
+            <UserButton />
+          </div>
         </div>
 
         <TeamTicketList tickets={tickets || []} />

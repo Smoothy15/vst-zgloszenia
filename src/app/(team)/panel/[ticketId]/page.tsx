@@ -32,8 +32,8 @@ export default async function TicketDetailPage({
     .order("created_at", { ascending: true });
 
   return (
-    <main className="min-h-screen bg-[var(--background)] px-4 py-8">
-      <div className="mx-auto max-w-3xl">
+    <main className="min-h-screen bg-[var(--background)] px-6 py-10 sm:px-8">
+      <div className="mx-auto max-w-4xl">
         <Link
           href="/panel"
           className="mb-6 inline-flex items-center gap-1 text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--gold)]"
